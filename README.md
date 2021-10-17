@@ -77,5 +77,5 @@ def test_verifica_conteudo_dos_campos_serializados(self):
 <p> A estudar </p>
 
 
-_**Nota:** Anotações referentes ao curso de aprofundamento em testes da formação Django REST da Alura_
+_**Nota:** Anotações referentes ao curso de aprofundamento em testes da formação <a href="https://cursos.alura.com.br/formacao-django-rest">Django REST APIs</a> da Alura_
 
