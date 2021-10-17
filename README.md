@@ -64,5 +64,18 @@ def test_verifica_conteudo_dos_campos_serializados(self):
     self.assertEqual(data['likes'], self.programa.likes)
 ```
 
+## Aula 03: Teste de Integração
 
+<p> A estudar </p>
+
+## Aula 04: Testando a API
+
+<p> A estudar </p>
+
+## Aula 05: Documentando a API com Swagger
+
+<p> A estudar </p>
+
+
+_**Nota:** Anotações referentes ao curso de aprofundamento em testes da formação Django REST da Alura_
 
