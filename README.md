@@ -23,6 +23,32 @@ pois iremos ter vários códigos a serem executados, então, criamos o primeiro 
 de unidade em vez de `self.programa = Programa()` fazemos `self.programa = Programa.objects.create()`, isso pois, estamos definindo um teste de unidade
 e não de integração, sendo assim precisamos apenas de uma instância do objeto de teste. </p>
 
+**Código**
+
+```
+from django.test import TestCase
+from aluraflix.models import Programa
+
+
+class ProgramaModelTestCase(TestCase):
+    
+    def setUp(self):
+        self.programa = Programa(
+            titulo = 'Procurando ninguém em latim',
+            data_lancamento = '2003-07-04'
+        )
+
+    def test_verifica_atributos_do_programa(self):
+        '''Teste que verifica os atributos de um programa com valores default'''
+        self.assertAlmostEqual(self.programa.titulo, 'Procurando ninguém em latim')
+        self.assertAlmostEqual(self.programa.tipo, 'F')
+        self.assertAlmostEqual(self.programa.data_lancamento, '2003-07-04')
+        self.assertAlmostEqual(self.programa.likes, 0)
+        self.assertAlmostEqual(self.programa.dislikes, 0)
+
+    
+```
+
 2. **Testando Serializer:**
 
   De forma semelhante, é criado o código de teste `test_serializers.py`. Em seguida, na construção do caso de teste, são passados todos os campos do programa
@@ -54,19 +80,88 @@ Aqui vemos o uso do `set()`, muito importante para que  qualquer adição ou rem
 esperado no teste, é simples, recebemos os dados do serializer e comparamos os valores de forma bem intuitiva, comparamos os valores recebidos com os valores do programa
 definido no caso de teste.
 
+**Código**
+
 ```
-def test_verifica_conteudo_dos_campos_serializados(self):
-    '''Teste que verifica o conteudo dos campos serializados'''
-    data = self.serializer.data
-    self.assertEqual(data['titulo'], self.programa.titulo)
-    self.assertEqual(data['data_lancamento'], self.programa.data_lancamento)
-    self.assertEqual(data['tipo'], self.programa.tipo)
-    self.assertEqual(data['likes'], self.programa.likes)
+from django.test import TestCase
+from aluraflix.models import Programa
+from aluraflix.serializers import ProgramaSerializer
+
+
+class ProgramaSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.programa = Programa(
+            titulo = 'Procurando ninguém em latim',
+            data_lancamento = '2003-07-04',
+            tipo = 'F',
+            likes = 2340,
+            dislikes = 40
+        )
+        self.serializer = ProgramaSerializer(instance=self.programa)
+
+    def test_verifica_os_serializados(self):
+        '''Teste que verifica os campos que estão sendo serializados'''
+        data = self.serializer.data
+        self.assertEqual(set(data.keys()), set(['titulo', 'tipo', 'data_lancamento', 'likes']))
+
+    def test_verifica_conteudo_dos_campos_serializados(self):
+        '''Teste que verifica o conteudo dos campos serializados'''
+        data = self.serializer.data
+        self.assertEqual(data['titulo'], self.programa.titulo)
+        self.assertEqual(data['data_lancamento'], self.programa.data_lancamento)
+        self.assertEqual(data['tipo'], self.programa.tipo)
+        self.assertEqual(data['likes'], self.programa.likes)
 ```
 
 ## Aula 03: Teste de Integração
 
-<p> A estudar </p>
+Dando início ao teste de integração, testamos a autenticação de um usuário com as credenciais corretas, para isso precisamos importar o objeto user, fazendo `from django.contrib.auth.models import User` e o método authenticate para realizar a verificação `from django.contrib.auth import authenticate`.
+
+```
+from django.contrib.auth.models import User
+from rest_framework.test import APITestCase
+from django.contrib.auth import authenticate
+
+
+class AuthenticationUserTestCase(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user('c3po', password='123456')
+
+    def test_autenticacao_user_com_credenciais_corretas(self):
+        '''Teste que verifica a autenticação de um user com as credenciais corretas'''
+        user = authenticate(username='c3po', password='123456')
+        self.assertTrue((user is not None) and user.is_authenticated)
+```
+
+</p> Certo, agora iremos testar a requisição GET para um usuário não logado, e para isso é necessário passar a URL que vai realizar a requisição, então, `from django.urls import reverse`, esse módulo é necessário pois irá expandir todas as possíveis URLs. </p>
+
+No setup do caso de teste, adicionamos a instância `self.list_url = reverse('programas-list')`, ou seja, a lista com todas as possíveis requisições do recurso programas. 
+Em seguida, realizamos o seguinte teste para verificar o caso de uma requisição GET com o usuário não logado:
+    
+```
+def test_requisicao_get_nao_autorizada(self):
+    '''Teste que verifica uma requisição GET sem autenticar'''
+    response = self.client.get(self.list_url)
+    self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+```
+
+<p> Neste teste, realizamos uma requisição GET para o recurso programas e verificamos se o status code é 401, uma requisição não autorizada. Em seguida, sem grandes mistérios verificamos a autenticação nos casos de username ou senha incorretos </p>
+
+```
+def test_autenticacao_de_user_com_username_incorreto(self):
+    '''Teste que verifica autenticação de um user com username incorreto'''
+    user = authenticate(username='c3pp', password='123456')
+    self.assertFalse((user is not None) and user.is_authenticated)
+
+def test_autenticacao_de_user_com_password_incorreto(self):
+    '''Teste que verifica autenticação de um user com password incorreto'''
+    user = authenticate(username='c3po', password='123455')
+    self.assertFalse((user is not None) and user.is_authenticated)
+```
+
+
 
 ## Aula 04: Testando a API
 
