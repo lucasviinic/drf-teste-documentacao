@@ -36,5 +36,3 @@ class AuthenticationUserTestCase(APITestCase):
         self.client.force_authenticate(self.user) #Forçamos que o cliente da requisição seja autenticado
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
