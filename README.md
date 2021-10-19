@@ -249,8 +249,39 @@ Em seguida, testamos a API no Postman, verificando se o statuscode da requisiç�
 
 ## Aula 05: Documentando a API com Swagger
 
-<p> A estudar </p>
+Integramos o Swagger no Django Rest Framework e vimos na prática a documentação gerada. Seguindo às instruções presentes em https://github.com/axnsan12/drf-yasg, instalamos a biblioteca drf-yasg, `pip install drf-yasg`, em seguida, adicionamos drf_yasg nos apps da aplicação em `settings.py`, após isso, em `urls.py` importamos:
 
+```
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+```
+
+e definimos:
+
+```
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Aluraflix",
+      default_version='v1',
+      description="Provedor local de séries e filmes desenvolvida pela Alura no curso de Django REST",
+      terms_of_service="#",
+      contact=openapi.Contact(email="c3po@alura.com.br"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny],
+)
+```
+
+Para finalizar, adicionamos as seguintes rotas em urlpatterns:
+
+```
+path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+```
+
+Ao acessar tais recursos, veremos a documentação de toda a API.
 
 _**Nota:** Anotações referentes ao curso de aprofundamento em testes da formação <a href="https://cursos.alura.com.br/formacao-django-rest">Django REST APIs</a> da Alura_
 
