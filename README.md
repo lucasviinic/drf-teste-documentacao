@@ -216,7 +216,36 @@ class AuthenticationUserTestCase(APITestCase):
 
 ## Aula 04: Testando a API
 
-<p> A estudar </p>
+### Fixtures nos Testes
+
+Sempre que realizávamos um teste era criado um banco de dados padrão que, ao final dos testes, era destruído. Porém, é possível pegar as fixtures e utilizálas nos nossos
+testes. Para isso, declaramos `fixtures = ['programas_iniciais']`. Em seguida testamos se realmente os dados da fixture estão no banco de dados de teste.
+
+**Código completo**
+```
+from django.test import TestCase
+from aluraflix.models import Programa
+
+
+class FixturesDataTestCase(TestCase):
+
+    fixtures = ['programas_iniciais']
+
+    def test_verifica_carregamento_da_fixture(self):
+        programa_bizarro = Programa.objects.get(pk=1)
+        todos_os_programas = Programa.objects.all()
+        
+        self.assertEqual(programa_bizarro.titulo, 'Coisas bizarras')
+        self.assertEqual(len(todos_os_programas), 9)
+```
+
+### Testando API no Postman
+
+Em seguida, testamos a API no Postman, verificando se o statuscode da requisição era o esperado. Além disso, verificamos também se o tipo de dado da resposta estava no formato desejado.
+
+**Screenshot**
+
+<img src="https://i.imgur.com/tRqLxVc.png" width="100%" />
 
 ## Aula 05: Documentando a API com Swagger
 
