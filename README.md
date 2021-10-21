@@ -19,8 +19,8 @@ quando comparado aos testes de unidade. Geralmente, simula aquilo que um usuári
 1. **Testando Modelo:**
 
   Na pasta do app, no caso do curso, a pasta "aluraflix", criamos a pasta de testes nomeada "tests" no plural, em seguida criamos o `__init__.py`, isso
-pois iremos ter vários códigos a serem executados, então, criamos o primeiro código de teste, par testar os modelos, portanto `test_models.py`. <p> Em um teste
-de unidade em vez de `self.programa = Programa()` fazemos `self.programa = Programa.objects.create()`, isso pois, estamos definindo um teste de unidade
+pois iremos ter vários códigos a serem executados, então, criamos o primeiro código de teste, para testar os modelos, portanto `test_models.py`. <p> Em um teste
+de unidade em vez de `self.programa = Programa.objects.create()` fazemos `self.programa = Programa()`, isso pois, estamos definindo um teste de unidade
 e não de integração, sendo assim precisamos apenas de uma instância do objeto de teste. </p>
 
 **Código completo**
